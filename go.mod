@@ -3,6 +3,7 @@ module github.com/hudangwei/common
 go 1.20
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/ClickHouse/clickhouse-go v1.5.4
 	github.com/IBM/sarama v1.42.1
 	github.com/astaxie/beego v1.12.3
