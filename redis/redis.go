@@ -7,6 +7,7 @@ import (
 	"time"
 
 	redigo "github.com/gomodule/redigo/redis"
+	"github.com/hudangwei/common/depends"
 	"github.com/hudangwei/common/logger"
 	"go.uber.org/zap"
 )
@@ -24,6 +25,25 @@ type RedisConfig struct {
 
 type Redis struct {
 	pool *redigo.Pool
+}
+
+func (r *Redis) Open(f depends.Configger, name string) error {
+	conf, err := f.LoadConfig(&RedisConfig{}, name)
+	if err != nil {
+		logger.Error("redis config with error", zap.Error(err), zap.String("redis config name", name))
+		return err
+	}
+	redisConfig := conf.(*RedisConfig)
+	if redisConfig == nil {
+		return _nilConfigErr
+	}
+	err = r.OpenWithConfig(redisConfig)
+	if err != nil {
+		logger.Error("redis open with error", zap.Error(err), zap.String("redis config name", name), zap.String("redis addr", redisConfig.Addr))
+		return err
+	}
+	logger.Info("redis open ok", zap.String("redis config name", name), zap.String("redis addr", redisConfig.Addr))
+	return nil
 }
 
 func (r *Redis) OpenWithConfig(conf *RedisConfig) error {

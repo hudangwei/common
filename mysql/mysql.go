@@ -9,6 +9,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/hudangwei/common/depends"
 	"github.com/hudangwei/common/logger"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
@@ -37,6 +38,22 @@ type Mysql struct {
 	closeOnce sync.Once
 	closeFlag int32
 	closeChan chan struct{}
+}
+
+func (m *Mysql) Open(f depends.Configger, name string) error {
+	conf, err := f.LoadConfig(&MySqlConfig{}, name)
+	if err != nil || conf == nil {
+		logger.Error("mysql config with error", zap.Error(err), zap.String("mysql config name", name))
+		return err
+	}
+	err = m.OpenWithConfig(conf.(*MySqlConfig))
+	if err != nil {
+		logger.Error("mysql open with error", zap.Error(err), zap.String("mysql config name", name), zap.String("mysql addr", conf.(*MySqlConfig).Host))
+		return err
+	}
+	logger.Info("mysql open ok", zap.String("mysql config name", name), zap.String("mysql addr", conf.(*MySqlConfig).Host))
+
+	return nil
 }
 
 func (m *Mysql) OpenWithConfig(conf *MySqlConfig) error {
