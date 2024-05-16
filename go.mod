@@ -12,6 +12,7 @@ require (
 	github.com/go-chi/chi v1.5.5
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gomodule/redigo v2.0.0+incompatible
+	github.com/gorilla/websocket v1.5.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/syndtr/goleveldb v1.0.0
 	go.uber.org/zap v1.26.0
