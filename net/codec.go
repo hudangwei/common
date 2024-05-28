@@ -8,4 +8,10 @@ type Codec interface {
 	Close() error
 }
 
-type NewCodecFunc func(io.ReadWriteCloser) Codec
+type ReadWriteCloser interface {
+	io.Writer
+	io.Closer
+	Reader() (io.Reader, error)
+}
+
+type NewCodecFunc func(ReadWriteCloser) Codec

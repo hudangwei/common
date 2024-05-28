@@ -1,6 +1,7 @@
 package net
 
 import (
+	"io"
 	"log"
 	"time"
 
@@ -15,13 +16,13 @@ func NewWSConn(conn *websocket.Conn) *WSConn {
 	return &WSConn{conn}
 }
 
-func (c *WSConn) Read(p []byte) (int, error) {
+func (c *WSConn) Reader() (io.Reader, error) {
 	_, r, err := c.conn.NextReader()
 	if err != nil {
 		log.Println("websocket read with err:", err)
-		return 0, err
+		return nil, err
 	}
-	return r.Read(p)
+	return r, nil
 }
 
 func (c *WSConn) Write(p []byte) (int, error) {

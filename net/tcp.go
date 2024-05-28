@@ -37,7 +37,7 @@ func (s *TCPServer) Serve() error {
 
 		session := s.manager.NewSession(s.protocol)
 		session.PutExtraData("remote_addr", conn.RemoteAddr().String())
-		codec := s.newCodec(conn)
+		codec := s.newCodec(NewTCPConn(conn))
 		session.Do(codec)
 	}
 }
