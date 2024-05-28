@@ -3,7 +3,7 @@ package net
 import "io"
 
 type Codec interface {
-	Send(string) error
+	Send([]byte) error
 	Recv() (interface{}, error)
 	Close() error
 }

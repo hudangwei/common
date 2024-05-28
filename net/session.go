@@ -23,7 +23,7 @@ type Session struct {
 	closeOnce sync.Once
 	closeFlag int32
 	closeChan chan struct{}
-	dataChan  chan string
+	dataChan  chan []byte
 	sendMutex *sync.Mutex
 
 	extraData map[string]interface{}
@@ -36,7 +36,7 @@ func NewSession(protocol Protocol, manager *Manager) *Session {
 		protocol:  protocol,
 		manager:   manager,
 		closeChan: make(chan struct{}),
-		dataChan:  make(chan string, 100),
+		dataChan:  make(chan []byte, 100),
 		sendMutex: &sync.Mutex{},
 		extraData: make(map[string]interface{}),
 		mu:        &sync.RWMutex{},
@@ -86,7 +86,7 @@ func (s *Session) IsClosed() bool {
 	return atomic.LoadInt32(&s.closeFlag) == 1
 }
 
-func (s *Session) AsyncWrite(data string, timeout time.Duration) (err error) {
+func (s *Session) AsyncWrite(data []byte, timeout time.Duration) (err error) {
 	if s.IsClosed() {
 		return ErrConnClosing
 	}
@@ -116,7 +116,7 @@ func (s *Session) AsyncWrite(data string, timeout time.Duration) (err error) {
 	}
 }
 
-func (s *Session) Send(data string) error {
+func (s *Session) Send(data []byte) error {
 	if s.IsClosed() {
 		return ErrConnClosing
 	}

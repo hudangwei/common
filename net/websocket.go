@@ -79,10 +79,10 @@ type ReConnectWSClient struct {
 	closeChan         chan struct{}
 	keepaliveOnce     sync.Once
 	keepaliveInterval int
-	keepaliveReq      func() string
+	keepaliveReq      func() []byte
 }
 
-func NewReConnectWSClient(addr string, newCodec NewCodecFunc, protocol Protocol, keepaliveInterval int, keepaliveReq func() string) (*ReConnectWSClient, error) {
+func NewReConnectWSClient(addr string, newCodec NewCodecFunc, protocol Protocol, keepaliveInterval int, keepaliveReq func() []byte) (*ReConnectWSClient, error) {
 	client := &ReConnectWSClient{
 		Protocol: protocol,
 		addr:     addr,
@@ -178,7 +178,7 @@ func (c *ReConnectWSClient) OnDisconnect(session *Session) {
 	c.reconnect()
 }
 
-func (c *ReConnectWSClient) Send(data string) error {
+func (c *ReConnectWSClient) Send(data []byte) error {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	if c.session != nil {
