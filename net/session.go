@@ -2,6 +2,7 @@ package net
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -125,6 +126,7 @@ func (s *Session) Send(data []byte) error {
 
 	err := s.codec.Send(data)
 	if err != nil {
+		fmt.Println("codec send with error", err)
 		return err
 	}
 	return nil
@@ -149,15 +151,18 @@ func (s *Session) readLoop() {
 		}
 		data, err := s.codec.Recv()
 		if err != nil {
+			fmt.Println("recv with error", err)
 			return
 		}
 		if s.protocol != nil {
 			err := s.protocol.Verify(data)
 			if err != nil {
+				fmt.Println("protocol verify with error", err)
 				return
 			}
 			err = s.protocol.OnMessage(s, data)
 			if err != nil {
+				fmt.Println("protocol onMessage with error", err)
 				return
 			}
 		}
@@ -182,6 +187,7 @@ func (s *Session) writeLoop() {
 			}
 			err := s.codec.Send(data)
 			if err != nil {
+				fmt.Println("codec send with error", err)
 				return
 			}
 		}
