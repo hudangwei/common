@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"sync"
 	"time"
 
 	"github.com/hudangwei/common/depends"
@@ -30,7 +31,8 @@ type MongoConfig struct {
 }
 
 type Mongo struct {
-	db *mongo.Client
+	db        *mongo.Client
+	closeOnce sync.Once
 }
 
 func (m *Mongo) Open(f depends.Configger, name string) error {
@@ -101,4 +103,12 @@ func buildDsn(username, password, host string, port int, dbName, authSource stri
 
 func (m *Mongo) DB() *mongo.Client {
 	return m.db
+}
+
+func (m *Mongo) Close() {
+	m.closeOnce.Do(func() {
+		if m.db != nil {
+			m.db.Disconnect(context.TODO())
+		}
+	})
 }
