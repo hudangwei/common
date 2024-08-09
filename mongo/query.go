@@ -39,7 +39,9 @@ func FindOne(ctx context.Context, db *mongo.Client, dbName, collectionName strin
 	mopts := moptions.FindOne()
 	mopts.SetProjection(fields)
 	mopts.SetSort(sort)
-	mopts.SetSkip(int64(cursor))
+	if cursor > 0 {
+		mopts.SetSkip(int64(cursor))
+	}
 
 	if err := coll.FindOne(ctx, filter, mopts).Decode(result); err != nil {
 		return err
@@ -56,8 +58,12 @@ func FindMany(ctx context.Context, db *mongo.Client, dbName, collectionName stri
 	mopts := moptions.Find()
 	mopts.SetProjection(fields)
 	mopts.SetSort(sort)
-	mopts.SetSkip(int64(cursor))
-	mopts.SetLimit(int64(size))
+	if cursor > 0 {
+		mopts.SetSkip(int64(cursor))
+	}
+	if size > 0 {
+		mopts.SetLimit(int64(size))
+	}
 
 	cur, err := coll.Find(ctx, filter, mopts)
 	if err != nil {
