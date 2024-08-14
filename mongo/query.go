@@ -78,7 +78,7 @@ func FindMany(ctx context.Context, db *mongo.Client, dbName, collectionName stri
 	return nil
 }
 
-// 查询符合条件的记录数。
+// 查询符合条件的记录数。bson.D{}获取collection的数据总量
 func Count(ctx context.Context, db *mongo.Client, dbName, collectionName string, filter any) (int, error) {
 	ctx, cancel, coll := Prepare(ctx, db, dbName, collectionName)
 	defer cancel()
@@ -167,6 +167,23 @@ func Pipe(ctx context.Context, db *mongo.Client, dbName, collectionName string, 
 	defer cur.Close(ctx)
 
 	if err = cur.Decode(result); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func PipeMany(ctx context.Context, db *mongo.Client, dbName, collectionName string, pipeline, result any) error {
+	ctx, cancel, coll := Prepare(ctx, db, dbName, collectionName)
+	defer cancel()
+
+	cur, err := coll.Aggregate(ctx, pipeline)
+	if err != nil {
+		return err
+	}
+	defer cur.Close(ctx)
+
+	if err = cur.All(ctx, result); err != nil {
 		return err
 	}
 
