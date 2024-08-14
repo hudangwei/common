@@ -2,7 +2,6 @@ package dsl
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strconv"
 
@@ -220,7 +219,6 @@ func (r *Rule) ToMongo(configs []Config) (bson.D, error) {
 					}
 				}
 			case tokenNotEqual:
-				fmt.Println(currentConfig.Type)
 				if currentConfig.Type == ConfigTypeString {
 					text = regexp.QuoteMeta(text)
 				}

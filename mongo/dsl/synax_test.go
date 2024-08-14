@@ -121,7 +121,7 @@ var webSearchConfigs = []Config{
 }
 
 func TestTransFormExp(t *testing.T) {
-	s := "resp=\"powered by\" && is_req == true && app=\"Meta-Author\""
+	s := "resp=\"powered by\" && is_req!=true && app=\"Meta-Author\""
 	tokens, err := ParseTokens(s)
 	if err != nil {
 		t.Fatal(err)
