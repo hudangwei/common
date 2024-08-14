@@ -240,7 +240,7 @@ func (r *Rule) ToMongo(configs []Config) (bson.D, error) {
 					r = bson.D{
 						{
 							Key:   s1,
-							Value: bson.M{"$not": v},
+							Value: bson.M{"$ne": v},
 						},
 					}
 				}
