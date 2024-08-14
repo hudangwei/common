@@ -3,6 +3,7 @@ package dsl
 import (
 	"errors"
 	"regexp"
+	"strings"
 )
 
 //	title="NBX NetSet" || (header="Alternates" && body="NBX")
@@ -23,6 +24,7 @@ const (
 	tokenTag    = "tag"
 	tokenText   = "text"
 	tokenNumber = "number"
+	tokenBool   = "bool"
 
 	tokenContains   = "="
 	tokenFullEqual  = "=="
@@ -163,9 +165,17 @@ func ParseTokens(s1 string) ([]Token, error) {
 			textOption := string(s[i:])
 			ret := defaultReg.FindString(textOption)
 			if ret != "" {
-				tmpToken = Token{
-					name:    tokenTag,
-					content: ret,
+				lowerRet := strings.ToLower(ret)
+				if lowerRet == "true" || lowerRet == "false" {
+					tmpToken = Token{
+						name:    tokenBool,
+						content: lowerRet,
+					}
+				} else {
+					tmpToken = Token{
+						name:    tokenTag,
+						content: ret,
+					}
 				}
 				tokens = append(tokens, tmpToken)
 				i += len(ret)

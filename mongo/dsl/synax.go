@@ -2,6 +2,7 @@ package dsl
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -63,8 +64,8 @@ func TransFormExp(tokens []Token) (*Rule, error) {
 			if err != nil {
 				return nil, err
 			}
-			if !(p3.name == tokenText || p3.name == tokenNumber) {
-				return nil, errors.New("synax error in" + tmpToken.content + " " + p2.content + " " + p3.content)
+			if !(p3.name == tokenText || p3.name == tokenNumber || p3.name == tokenBool) {
+				return nil, errors.New("synax error in " + tmpToken.content + " " + p2.content + " " + p3.content)
 			}
 			// 正则缓存对象
 			var dsl dslExp
@@ -219,6 +220,7 @@ func (r *Rule) ToMongo(configs []Config) (bson.D, error) {
 					}
 				}
 			case tokenNotEqual:
+				fmt.Println(currentConfig.Type)
 				if currentConfig.Type == ConfigTypeString {
 					text = regexp.QuoteMeta(text)
 				}

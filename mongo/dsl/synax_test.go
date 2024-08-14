@@ -111,10 +111,17 @@ var webSearchConfigs = []Config{
 		Example:     "url=\"example.com\"",
 		Type:        ConfigTypeString,
 	},
+	{
+		TagName:     "is_req",
+		ColumnName:  "is_req",
+		Description: "通过类型查询",
+		Example:     "url=true",
+		Type:        ConfigTypeBool,
+	},
 }
 
 func TestTransFormExp(t *testing.T) {
-	s := "resp=\"powered by\" && status_code = 200 && app=\"Meta-Author\""
+	s := "resp=\"powered by\" && is_req == true && app=\"Meta-Author\""
 	tokens, err := ParseTokens(s)
 	if err != nil {
 		t.Fatal(err)
