@@ -60,7 +60,7 @@ func (m *Mysql) OpenWithConfig(conf *MySqlConfig) error {
 	if conf == nil {
 		return nilConfigErr
 	}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?timeout=%s&charset=%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?timeout=%s&charset=%s&parseTime=true",
 		conf.User, conf.Password, conf.Host, conf.Port, conf.DBName, DefaultConnectWaiTimeout.String(), DefaultCharset)
 	sqlxDB, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
